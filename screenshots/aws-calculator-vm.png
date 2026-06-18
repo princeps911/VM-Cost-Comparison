@@ -1,0 +1,5 @@
+screenshots/
+    ├── aws-calculator-vm.png
+    ├── aws-calculator-s3.png
+    ├── azure-calculator-vm.png
+    └── azure-calculator-blob.png
