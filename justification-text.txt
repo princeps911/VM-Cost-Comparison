@@ -1,1 +1,24 @@
-justification-text.txt
+Architectural Justification & Cost-Performance Deep Dive
+This document provides the formal engineering and financial justifications for the baseline multi-cloud architecture mapped out in report.md and README.md. It details why specific service tiers were selected and provides the technical rationale for selecting Microsoft Azure as the primary deployment framework.  
+
+
+1. Compute Layer & Local Block Storage Justification
+AWS Selection: 2x t3.large Instances (Linux, On-Demand) + 2x 30 GB gp3 Volumes.  
+Azure Selection: 2x D2as v5 Instances (Linux, Pay-as-You-Go) + 2x 32 GiB Standard SSDs (E4).  
+Technical Rationale:
+The AWS t3.large instance family uses a burstable performance credit model on the Nitro hypervisor. While cost-effective for workloads with irregular spikes, it carries an inherent operational risk of CPU credit exhaustion under sustained, high-traffic production baselines. If credits deplete, performance is heavily throttled.  Conversely, the Azure D2as v5 instance family utilizes AMD EPYC™ 3rd Generation processors and delivers a dedicated, steady-state CPU profile. It does not rely on a performance credit balance, ensuring predictable performance under prolonged multi-tier web application stress.  
+Storage Parity:
+AWS gp3 volumes allow the independent scaling of IOPS and throughput, separating performance from capacity. To match this baseline on Azure without over-provisioning premium performance tiers, the E4 Standard SSD tier (32 GiB) was selected. The slight premium in Azure’s compute/disk bundle (+$4.09/month) is technically justified by the elimination of compute throttling risks, offering higher operational stability.  
+
+
+2. Object Storage Layer Justification
+AWS Selection: S3 Standard Tier.  Azure Selection: Block Blob Storage (GPv2, Hot Tier, Locally Redundant Storage - LRS).  
+Technical Rationale:
+Both platforms exhibit extreme operational and transactional parity for unstructured static web asset hosting.  AWS S3 Standard is priced at $0.023/GB.  Azure Blob Hot Tier (LRS) is priced at $0.021/GB.  Azure Blob Storage General Purpose v2 (GPv2) configured to the Hot Access Tier with LRS provides an identical high-availability and redundancy profile to AWS S3 Standard within a single region. The minor financial variation ($2.39 on AWS vs. $2.22 on Azure) stems from Azure’s slightly lower base data capacity unit rate, making it a highly compatible, cost-optimized direct mapping.  
+
+3. Network Egress Economics (The Primary Cost Driver)Workload Profile: 500 GB/month Outbound Internet Data Transfer.  
+Technical Rationale:
+The ultimate factor dictating platform selection is the structural variance in network egress routing economics.  AWS treats all outbound internet data transfer from the us-east-1 region linearly under standard on-demand data transfer rates ($0.09 per GB), leading to a rigid $45.00 monthly baseline.  Microsoft Azure provides an integrated routing optimization benefit: the first 100 GB per month of public outbound internet egress is completely free across all subscriptions. Azure only levies its regional bandwidth charge ($0.08 per GB) on the remaining 400 GB.  This single architectural variance reduces the network routing subtotal from $45.00 to $32.00, introducing an immediate, sustainable monthly savings of $13.00 (a 28.8% reduction in networking overhead).
+
+Final Deployment Recommendation Summary
+Microsoft Azure is selected as the recommended cloud provider for this application footprint. It reduces overall baseline TCO by 5.23% ($164.58/month vs. $173.66/month) while simultaneously removing the risk of burstable compute degradation by providing dedicated hardware nodes.  
