@@ -1,2 +1,1 @@
-estimates/
-│   ├── aws-estimate-link.txt
+https://calculator.aws/#/estimate?id=a04c6a74ce6c916b909f4d471e0fbe63e7cbb97c
