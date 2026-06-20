@@ -103,6 +103,16 @@ The following structural matrix itemizes the calculated monthly subtotal costs a
 \* \*\*The Internet Routing Mechanism:\*\* AWS evaluates raw outbound internet data transfer over a standalone baseline pricing card structure at \\$0.09 per GB, bringing 500 GB of data to a rigid \\$45.00 monthly baseline. Conversely, Microsoft Azure natively integrates a generous cloud routing optimization model: the first \*\*100 GB per month of outbound internet egress is granted entirely free of charge\*\* across all subscriptions. Consequently, Azure only bills for the remaining 400 GB of active routing at a standard regional unit rate of \\$0.08 per GB. This architectural nuance results in an immediate, localized monthly savings of \*\*\\$13.00\*\* for the application deployment.
 
 
+### 3.4 Windows Server Slicing & Azure Hybrid Benefit (AHB) Economics
+To satisfy multi-scenario requirements, an alternative analysis was conducted evaluating a Windows Server OS deployment for the compute tier instead of Linux:
+* **Standard Windows Server Pay-as-You-Go Premium:** Deploying the two compute nodes with a standard Windows license natively injected by the cloud provider introduces a licensing surcharge. On AWS, this pushes the instance tier costs up significantly. On Azure, the standard Windows pay-as-you-go VM rate increases from $117.24/month to approximately $213.00/month.
+* **The Azure Hybrid Benefit (AHB) Impact:** If evaluated through the lens of an enterprise possessing legacy on-premises Windows Server licenses with active Software Assurance (SA), AHB allows the organization to swap the licensing surcharge out completely. This drops the Azure VM cost back down to its base Linux rate ($117.24/month). This mechanism nullifies the cloud licensing penalty—an advantage that cannot be natively mirrored on AWS on-demand instances without transitioning to complex, high-overhead Dedicated Hosts.
+
+### 3.5 Inter-Zone Data Transfer Architecture
+Internal data replication patterns (e.g., state clustering across separate Availability Zones for high availability) incur specialized routing charges that differ heavily between ecosystems:
+* **AWS Inter-Zone Pricing:** AWS charges a standard linear fee of $0.01 per GB for data transferred across Availability Zones (AZs) within the same region, applying the fee to both ingress and egress directions (meaning a 100 GB cross-AZ replication payload incurs $2.00 in total internal transport costs).
+* **Azure Inter-Zone Pricing:** Microsoft Azure provides a massive structural advantage here: as of mid-2024, Microsoft made **Azure Availability Zone data transfer completely free of charge** for all standard data replication paths. This allows application tiers to scale across zone boundaries for high availability without generating hidden, variable internal data transportation line items.
+
 
 \---
 
